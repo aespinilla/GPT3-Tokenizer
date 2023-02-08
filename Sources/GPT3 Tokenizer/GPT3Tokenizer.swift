@@ -1,4 +1,4 @@
-public struct GPT3Tokenizer {
+public class GPT3Tokenizer {
     private let bytesUnicode: BytesUnicode
     private let tableCode: TableCode
     private let bpeRanks: BpeRanks
