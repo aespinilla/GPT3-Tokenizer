@@ -9,7 +9,7 @@ GPT-2 and GPT-3 use byte pair encoding to turn text into a series of integers to
 Add this repository url to Swift Package Manager
 
 ```
-https://github.com/aespinilla/GPT3Tokenizer
+https://github.com/aespinilla/GPT3-Tokenizer.git
 ```
 
 ## Usage
