@@ -67,9 +67,8 @@ private extension Encoder {
         while true {
             var minPairs: [Int: Pairs] = .init()
             pairs.forEach({ pair in
-                if let rank = bpeRanks.firstIndex(where: { $0[0] == pair.first && $0[1] == pair.second }) {
-                    minPairs[rank] = pair
-                }
+                guard let rank = bpeRanks.firstIndex(where: { $0 == pair }) else { return }
+                minPairs[rank] = pair
             })
             
             guard let min = minPairs.keys.min(),
