@@ -13,10 +13,7 @@ class BytesUnicode {
     }
     
     var decoder: [String: Int] {
-        let encoder = encoder
-        var result: [String: Int] = .init()
-        encoder.forEach({ result[$1] = $0 })
-        return result
+        encoder.inverted
     }
     
     private lazy var bytesToUnicode: [Int: String] = {
