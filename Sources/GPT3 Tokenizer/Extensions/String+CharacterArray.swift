@@ -14,3 +14,9 @@ extension String {
         map({ String($0) })
     }
 }
+
+extension CharacterArray {
+    var toString: String {
+        joined(separator: " ")
+    }
+}

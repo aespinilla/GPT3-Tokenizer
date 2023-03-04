@@ -15,4 +15,11 @@ final class StringCharacterArrayTests: XCTestCase {
         let output = sut.characterArray
         XCTAssertEqual(output, expected)
     }
+    
+    func testGivenCharacterArrayWhenToStringThenMatch() throws {
+        let expected = "H e l l o   w o r l d !"
+        let sut: CharacterArray = ["H", "e", "l", "l", "o", " ", "w", "o", "r", "l", "d", "!"]
+        let output = sut.toString
+        XCTAssertEqual(output, expected)
+    }
 }

@@ -35,14 +35,13 @@ public class Encoder {
         
         let reencodeds = matches
             .map({ match in
-                let items = Array(match.utf8).map({ Int($0) })
-                let reencoded = items.compactMap({ bytesToUnicode[$0] }).joined()
+                let reencoded = match.utf8Integers.compactMap({ bytesToUnicode[$0] }).joined()
                 return reencoded
             })
         
         let encoder = tableCode.encoder
         let encode = reencodeds
-            .compactMap({ bpe(token: $0).split(separator: " ").compactMap({ encoder?[String($0)] }) })
+            .compactMap({ bpe(token: $0).splitWords.compactMap({ encoder?[String($0)] }) })
             .flatMap({ $0 })
         return encode
     }
@@ -51,9 +50,9 @@ public class Encoder {
 private extension Encoder {
     func matches(in text: String) -> [String] {
         guard let results = regex?.matches(in: text,
-                                    range: NSRange(text.startIndex..., in: text))
+                                           range: NSRange(text.startIndex..., in: text))
         else { return [] }
-        return results.compactMap({ Range($0.range, in: text).map { String(text[$0]) } })
+        return results.compactMap({ Range($0.range, in: text).map({ String(text[$0]) }) })
     }
     
     func bpe(token: String) -> String {
@@ -85,7 +84,7 @@ private extension Encoder {
             }
         }
         
-        let result = word.joined(separator: " ")
+        let result = word.toString
         cache[token] = result
         return result
     }

@@ -19,8 +19,6 @@ class BpeRanks {
                 let vocab = String(data: data, encoding: .utf8)
         else { return [] }
         
-        return vocab
-            .split(separator: "\n", omittingEmptySubsequences: true)
-            .map({ $0.split(separator: " ", omittingEmptySubsequences: true).map({ String($0) }) })
+        return vocab.splitInLinesAndWords
     }()
 }
