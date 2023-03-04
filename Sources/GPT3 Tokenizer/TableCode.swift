@@ -22,9 +22,7 @@ class TableCode {
     }
     
     var decoder: DecoderMap? {
-        var result: [Int: String] = .init()
-        tableCode.forEach({ result[$1] = $0 })
-        return result
+        tableCode.inverted
     }
     
     private lazy var tableCode: [String: Int] = {
