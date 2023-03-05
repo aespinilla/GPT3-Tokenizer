@@ -8,7 +8,7 @@
 import Foundation
 
 protocol FileReader {
-    func read(name: String, fileExtension: String) -> Data?
+    func read<T>(name: String, fileExtension: String, decoder: any FileReaderDecoder) -> T?
 }
 
 struct ModuleFileReader: FileReader {
@@ -20,10 +20,11 @@ struct ModuleFileReader: FileReader {
         self.fileManager = fileManager
     }
     
-    func read(name: String, fileExtension: String) -> Data? {
+    func read<T>(name: String, fileExtension: String, decoder: any FileReaderDecoder) -> T? {
         guard let path = bundle.path(forResource: name, ofType: fileExtension),
-                let data = fileManager.contents(atPath: path)
+              let data = fileManager.contents(atPath: path),
+              let decoded = try? decoder.decode(from: data) as? T
         else { return nil }
-        return data
+        return decoded
     }
 }

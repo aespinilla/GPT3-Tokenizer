@@ -32,18 +32,14 @@ public class Encoder {
     public func enconde(text: String) -> [Int] {
         let matches = matches(in: text)
         let bytesToUnicode = bytesUnicode.encoder
-        
-        let reencodeds = matches
-            .map({ match in
-                let reencoded = match.utf8Integers.compactMap({ bytesToUnicode[$0] }).joined()
-                return reencoded
-            })
-        
         let encoder = tableCode.encoder
-        let encode = reencodeds
-            .compactMap({ bpe(token: $0).splitWords.compactMap({ encoder?[String($0)] }) })
+        
+        return matches
+            .map({
+                let unicode = $0.bytesToUnicode(encoder: bytesToUnicode)
+                return bpe(token: unicode).encode(encoder: encoder)
+            })
             .flatMap({ $0 })
-        return encode
     }
 }
 
@@ -67,7 +63,7 @@ private extension Encoder {
         while true {
             var minPairs: [Int: Pairs] = .init()
             pairs.forEach({ pair in
-                guard let rank = bpeRanks.firstIndex(where: { $0 == pair }) else { return }
+                guard let rank = bpeRanks[pair] else { return }
                 minPairs[rank] = pair
             })
             

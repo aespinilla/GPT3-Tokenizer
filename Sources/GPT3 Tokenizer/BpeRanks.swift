@@ -9,20 +9,16 @@ import Foundation
 
 class BpeRanks {
     private let reader: FileReader
+    private let decoder: BpeRanksFileReaderDecoder
     
-    init(reader: FileReader = ModuleFileReader()) {
+    init(reader: FileReader = ModuleFileReader(), decoder: BpeRanksFileReaderDecoder = .init()) {
         self.reader = reader
+        self.decoder = decoder
     }
     
-    lazy var ranks: [Pairs] = {
-        guard let data = reader.read(name: "vocab", fileExtension: "bpe"),
-                let vocab = String(data: data, encoding: .utf8)
-        else { return [] }
-        
-        return vocab.splitInLinesAndWords
-            .compactMap({
-                guard let first = $0.first, let last = $0.last else { return nil }
-                return Pairs(first: first, second: last)
-            })
+    lazy var ranks: [Pairs: Int] = {
+        guard let data: [Pairs: Int] = reader.read(name: "vocab", fileExtension: "bpe", decoder: decoder)
+        else { return [:] }
+        return data
     }()
 }

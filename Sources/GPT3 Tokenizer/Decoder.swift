@@ -24,7 +24,7 @@ public struct Decoder {
     public func decode(encode: [Int]) -> String? {
         let bytesUnicodeDecoder = bytesUnicode.decoder
         let tableCodeDecoder = tableCode.decoder
-        let text = encode.compactMap({ tableCodeDecoder?[$0] }).joined()
+        let text = encode.compactMap({ tableCodeDecoder[$0] }).joined()
         let decoded = text.characterArray.compactMap({ bytesUnicodeDecoder[$0] }).map({ UInt8($0) })
         let data = Data(decoded)
         let result = String(data: data, encoding: .utf8)

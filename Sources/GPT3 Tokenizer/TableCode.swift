@@ -12,25 +12,24 @@ typealias DecoderMap = [Int: String]
 
 class TableCode {
     private let reader: FileReader
-    private let jsonDecoder: JSONDecoder
+    private let tableCodeDecoder: TableCodeFileReaderDecoder
     
-    init(reader: FileReader = ModuleFileReader(), jsonDecoder: JSONDecoder = .init()) {
+    init(reader: FileReader = ModuleFileReader(), tableCodeDecoder: TableCodeFileReaderDecoder = .init()) {
         self.reader = reader
-        self.jsonDecoder = jsonDecoder
+        self.tableCodeDecoder = tableCodeDecoder
     }
     
-    var encoder: EncoderMap? {
+    var encoder: EncoderMap {
         tableCode
     }
     
-    var decoder: DecoderMap? {
+    var decoder: DecoderMap {
         tableCode.inverted
     }
     
     private lazy var tableCode: [String: Int] = {
-        guard let data = reader.read(name: "encoder", fileExtension: "json"),
-              let dictionary = try? jsonDecoder.decode([String: Int].self, from: data)
+        guard let data: [String: Int] = reader.read(name: "encoder", fileExtension: "json", decoder: tableCodeDecoder)
         else { return [:] }
-        return dictionary
+        return data
     }()
 }
