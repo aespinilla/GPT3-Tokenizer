@@ -9,9 +9,9 @@ import Foundation
 
 class BpeRanks {
     private let reader: FileReader
-    private let decoder: BpeRanksFileReaderDecoder
+    private let decoder: BpeRanksDecoder
     
-    init(reader: FileReader = ModuleFileReader(), decoder: BpeRanksFileReaderDecoder = .init()) {
+    init(reader: FileReader = ModuleFileReader(), decoder: BpeRanksDecoder = BpeRanksDecoderImpl()) {
         self.reader = reader
         self.decoder = decoder
     }

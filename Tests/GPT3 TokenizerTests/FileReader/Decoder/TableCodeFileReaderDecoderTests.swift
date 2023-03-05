@@ -9,10 +9,10 @@ import XCTest
 @testable import GPT3_Tokenizer
 
 final class TableCodeFileReaderDecoderTests: XCTestCase {
-    private var sut: TableCodeFileReaderDecoder!
+    private var sut: TableCodeDecoder!
 
     override func setUpWithError() throws {
-        sut = .init()
+        sut = TableCodeDecoderImpl()
     }
 
     override func tearDownWithError() throws {

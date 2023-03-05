@@ -9,10 +9,10 @@ import XCTest
 @testable import GPT3_Tokenizer
 
 final class BpeRanksFileReaderDecoderTests: XCTestCase {
-    private var sut: BpeRanksFileReaderDecoder!
+    private var sut: BpeRanksDecoder!
     
     override func setUpWithError() throws {
-        sut = .init()
+        sut = BpeRanksDecoderImpl()
     }
     
     override func tearDownWithError() throws {

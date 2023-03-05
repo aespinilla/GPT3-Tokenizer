@@ -12,9 +12,9 @@ typealias DecoderMap = [Int: String]
 
 class TableCode {
     private let reader: FileReader
-    private let tableCodeDecoder: TableCodeFileReaderDecoder
+    private let tableCodeDecoder: TableCodeDecoder
     
-    init(reader: FileReader = ModuleFileReader(), tableCodeDecoder: TableCodeFileReaderDecoder = .init()) {
+    init(reader: FileReader = ModuleFileReader(), tableCodeDecoder: TableCodeDecoder = TableCodeDecoderImpl()) {
         self.reader = reader
         self.tableCodeDecoder = tableCodeDecoder
     }

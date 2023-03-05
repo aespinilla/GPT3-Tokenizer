@@ -1,5 +1,5 @@
 //
-//  BpeRanksFileReaderDecoder.swift
+//  BpeRanksDecoder.swift
 //  
 //
 //  Created by Alberto Espinilla Garrido on 5/3/23.
@@ -7,10 +7,12 @@
 
 import Foundation
 
-struct BpeRanksFileReaderDecoder: FileReaderDecoder {
-    typealias Output = [Pairs: Int]
-    
-    func decode(from data: Data) throws -> Output {
+protocol BpeRanksDecoder {
+    func decode(from data: Data) throws -> [Pairs: Int]
+}
+
+struct BpeRanksDecoderImpl: BpeRanksDecoder {
+    func decode(from data: Data) throws -> [Pairs: Int] {
         guard let vocab = String(data: data, encoding: .utf8)
         else { return [:] }
         
