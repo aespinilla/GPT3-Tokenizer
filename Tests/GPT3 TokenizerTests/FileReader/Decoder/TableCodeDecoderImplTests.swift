@@ -1,5 +1,5 @@
 //
-//  TableCodeFileReaderDecoderTests.swift
+//  TableCodeDecoderImplTests.swift
 //  
 //
 //  Created by Alberto Espinilla Garrido on 5/3/23.
@@ -8,7 +8,7 @@
 import XCTest
 @testable import GPT3_Tokenizer
 
-final class TableCodeFileReaderDecoderTests: XCTestCase {
+final class TableCodeDecoderImplTests: XCTestCase {
     private var sut: TableCodeDecoder!
 
     override func setUpWithError() throws {
