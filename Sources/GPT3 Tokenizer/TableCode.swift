@@ -28,8 +28,9 @@ class TableCode {
     }
     
     private lazy var tableCode: [String: Int] = {
-        guard let data: [String: Int] = reader.read(name: "encoder", fileExtension: "json", decoder: tableCodeDecoder)
+        guard let data = reader.read(name: "encoder", fileExtension: "json"),
+              let tableCode = try? tableCodeDecoder.decode(from: data)
         else { return [:] }
-        return data
+        return tableCode
     }()
 }

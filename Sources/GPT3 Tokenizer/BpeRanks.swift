@@ -17,8 +17,9 @@ class BpeRanks {
     }
     
     lazy var ranks: [Pairs: Int] = {
-        guard let data: [Pairs: Int] = reader.read(name: "vocab", fileExtension: "bpe", decoder: decoder)
+        guard let data = reader.read(name: "vocab", fileExtension: "bpe"),
+              let ranks = try? decoder.decode(from: data)
         else { return [:] }
-        return data
+        return ranks
     }()
 }
