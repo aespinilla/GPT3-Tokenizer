@@ -22,12 +22,14 @@ public struct Decoder {
     /// - Returns: String value decoded
     ///
     public func decode(encode: [Int]) -> String? {
-        let bytesUnicodeDecoder = bytesUnicode.decoder
-        let tableCodeDecoder = tableCode.decoder
-        let text = encode.compactMap({ tableCodeDecoder[$0] }).joined()
-        let decoded = text.characterArray.compactMap({ bytesUnicodeDecoder[$0] }).map({ UInt8($0) })
-        let data = Data(decoded)
-        let result = String(data: data, encoding: .utf8)
-        return result
+        encode
+            .decode(tableCode.decoder)
+            .decode(bytesUnicode.decoder)
+    }
+}
+
+private extension Array where Element == Int {
+    func decode(_ decoder: [Int: String]) -> String {
+        compactMap({ decoder[$0] }).joined()
     }
 }
