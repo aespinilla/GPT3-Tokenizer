@@ -22,7 +22,7 @@ struct ModuleFileReader: FileReader {
     
     func read(name: String, fileExtension: String) -> Data? {
         guard let path = bundle.path(forResource: name, ofType: fileExtension),
-                let data = fileManager.contents(atPath: path)
+              let data = fileManager.contents(atPath: path)
         else { return nil }
         return data
     }
