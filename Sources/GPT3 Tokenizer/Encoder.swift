@@ -32,28 +32,23 @@ public class Encoder {
     public func enconde(text: String) -> [Int] {
         let matches = matches(in: text)
         let bytesToUnicode = bytesUnicode.encoder
-        
-        let reencodeds = matches
-            .map({ match in
-                let items = Array(match.utf8).map({ Int($0) })
-                let reencoded = items.compactMap({ bytesToUnicode[$0] }).joined()
-                return reencoded
-            })
-        
         let encoder = tableCode.encoder
-        let encode = reencodeds
-            .compactMap({ bpe(token: $0).split(separator: " ").compactMap({ encoder?[String($0)] }) })
+        
+        return matches
+            .map({
+                let unicode = $0.bytesToUnicode(encoder: bytesToUnicode)
+                return bpe(token: unicode).encode(encoder: encoder)
+            })
             .flatMap({ $0 })
-        return encode
     }
 }
 
 private extension Encoder {
     func matches(in text: String) -> [String] {
         guard let results = regex?.matches(in: text,
-                                    range: NSRange(text.startIndex..., in: text))
+                                           range: NSRange(text.startIndex..., in: text))
         else { return [] }
-        return results.compactMap({ Range($0.range, in: text).map { String(text[$0]) } })
+        return results.compactMap({ Range($0.range, in: text).map({ String(text[$0]) }) })
     }
     
     func bpe(token: String) -> String {
@@ -63,66 +58,60 @@ private extension Encoder {
         
         var word = token.characterArray
         let bpeRanks = bpeRanks.ranks
-        var pairs = getPairs(word: word)
+        var pairs = word.pairs
         
         while true {
             var minPairs: [Int: Pairs] = .init()
             pairs.forEach({ pair in
-                if let rank = bpeRanks.firstIndex(where: { $0[0] == pair.first && $0[1] == pair.second }) {
-                    minPairs[rank] = pair
-                }
+                guard let rank = bpeRanks[pair] else { return }
+                minPairs[rank] = pair
             })
             
             guard let min = minPairs.keys.min(),
                   let bigram = minPairs[min]
             else { break }
             
-            word = newWord(word: word, bigram: bigram)
+            word = word.newWord(bigram: bigram)
             if (word.count == 1) {
                 break
             } else {
-                pairs = getPairs(word: word)
+                pairs = word.pairs
             }
         }
         
-        let result = word.joined(separator: " ")
+        let result = word.toString
         cache[token] = result
         return result
     }
+}
+
+private extension CharacterArray {
+    var pairs: [Pairs] {
+        prevCurrent({ Pairs(first: $0, second: $1) }).unique
+    }
     
-    func newWord(word: CharacterArray, bigram: Pairs) -> CharacterArray {
+    func newWord(bigram: Pairs) -> Self {
         var i = 0
         var newWord: CharacterArray = .init()
         
-        while i < word.count {
-            guard let j = word[i...].firstIndex(of: bigram.first)
+        while i < count {
+            guard let j = self[i...].firstIndex(of: bigram.first)
             else {
-                newWord.append(contentsOf: word[i...])
+                newWord.append(contentsOf: self[i...])
                 break
             }
-            newWord.append(contentsOf: word[i..<j])
+            newWord.append(contentsOf: self[i..<j])
             i = j
             
-            if word[i] == bigram.first, i < word.count - 1, word[i+1] == bigram.second {
+            if self[i] == bigram.first, i < count - 1, self[i+1] == bigram.second {
                 newWord.append(bigram.join)
                 i += 2
             } else {
-                newWord.append(word[i])
+                newWord.append(self[i])
                 i += 1
             }
         }
         
         return newWord
-    }
-    
-    func getPairs(word: CharacterArray) -> [Pairs] {
-        var mutatedWord = word
-        var pairs: Set<Pairs> = .init()
-        var prev = mutatedWord.removeFirst()
-        mutatedWord.forEach({
-            pairs.insert(.init(first: prev, second: $0))
-            prev = $0
-        })
-        return Array(pairs)
     }
 }

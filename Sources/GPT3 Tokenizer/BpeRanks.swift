@@ -9,18 +9,17 @@ import Foundation
 
 class BpeRanks {
     private let reader: FileReader
+    private let decoder: BpeRanksDecoder
     
-    init(reader: FileReader = ModuleFileReader()) {
+    init(reader: FileReader = ModuleFileReader(), decoder: BpeRanksDecoder = BpeRanksDecoderImpl()) {
         self.reader = reader
+        self.decoder = decoder
     }
     
-    lazy var ranks: [[String]] = {
+    lazy var ranks: [Pairs: Int] = {
         guard let data = reader.read(name: "vocab", fileExtension: "bpe"),
-                let vocab = String(data: data, encoding: .utf8)
-        else { return [] }
-        
-        return vocab
-            .split(separator: "\n", omittingEmptySubsequences: true)
-            .map({ $0.split(separator: " ", omittingEmptySubsequences: true).map({ String($0) }) })
+              let ranks = try? decoder.decode(from: data)
+        else { return [:] }
+        return ranks
     }()
 }

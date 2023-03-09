@@ -13,10 +13,7 @@ class BytesUnicode {
     }
     
     var decoder: [String: Int] {
-        let encoder = encoder
-        var result: [String: Int] = .init()
-        encoder.forEach({ result[$1] = $0 })
-        return result
+        encoder.inverted
     }
     
     private lazy var bytesToUnicode: [Int: String] = {
@@ -24,11 +21,11 @@ class BytesUnicode {
         var cs = bs.map({ $0 })
         
         var n = 0
-        (0..<Int(pow(Double(2), Double(8))))
+        (0..<exponentialPow)
             .forEach({
                 if !bs.contains($0) {
                     bs.append($0)
-                    cs.append(Int(pow(Double(2), Double(8))) + n)
+                    cs.append(exponentialPow + n)
                     n += 1
                 }
             })
@@ -41,6 +38,10 @@ class BytesUnicode {
 }
 
 private extension BytesUnicode {
+    var exponentialPow: Int {
+        Int(pow(Double(2), Double(8)))
+    }
+    
     func range(start: Character, end: Character) -> [Int] {
         guard let startValue = start.utf16.first,
               let endValue = end.utf16.first
