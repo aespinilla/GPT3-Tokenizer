@@ -17,7 +17,8 @@ class BytesUnicode {
     }
     
     private lazy var bytesToUnicode: [Int: String] = {
-        var bs = range(start:  Character("!"), end: Character("~")) + range(start: Character("¡"), end: Character("¬")) + range(start: Character("®"), end: Character("ÿ"))
+        var bs = (0..<exponentialPow)
+            .filter({ $0.isBytePair })
         var cs = bs.map({ $0 })
         
         var n = 0
@@ -41,11 +42,15 @@ private extension BytesUnicode {
     var exponentialPow: Int {
         Int(pow(Double(2), Double(8)))
     }
+}
+
+extension Int {
+    var character: Character {
+        .init(self)
+    }
     
-    func range(start: Character, end: Character) -> [Int] {
-        guard let startValue = start.utf16.first,
-              let endValue = end.utf16.first
-        else { return [] }
-        return (Int(startValue)...Int(endValue)).map({ $0 })
+    var isBytePair: Bool {
+        let character = character
+        return character.isPrintable && !character.isWhitespace
     }
 }
