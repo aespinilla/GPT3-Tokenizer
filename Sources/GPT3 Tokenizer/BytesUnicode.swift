@@ -17,16 +17,15 @@ class BytesUnicode {
     }
     
     private lazy var bytesToUnicode: [Int: String] = {
-        var bs = (0..<exponentialPow)
-            .filter({ $0.isBytePair })
+        var bs = (0..<Int(pow(2.0, 8))).filter({ $0.isBytePair })
         var cs = bs.map({ $0 })
         
         var n = 0
-        (0..<exponentialPow)
+        (0..<Int(pow(2.0, 8)) )
             .forEach({
                 if !bs.contains($0) {
                     bs.append($0)
-                    cs.append(exponentialPow + n)
+                    cs.append(Int(pow(2.0, 8)) + n)
                     n += 1
                 }
             })
@@ -36,21 +35,4 @@ class BytesUnicode {
         zip(bs, characterSet).forEach({ result[$0] = $1 })
         return result
     }()
-}
-
-private extension BytesUnicode {
-    var exponentialPow: Int {
-        Int(pow(Double(2), Double(8)))
-    }
-}
-
-extension Int {
-    var character: Character {
-        .init(self)
-    }
-    
-    var isBytePair: Bool {
-        let character = character
-        return character.isPrintable && !character.isWhitespace
-    }
 }
